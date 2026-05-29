@@ -1,0 +1,32 @@
+# Render Blueprint — one-click deploy of the RAG backend + a pgvector Postgres.
+# Deploy: Render Dashboard -> New -> Blueprint -> connect this repo.
+# After it provisions, set OPENAI_API_KEY (and optionally CORS_ORIGIN) in the
+# rag-backend service env. The free Postgres ships with the `vector` extension.
+databases:
+  - name: rag-db
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: rag-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/main
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rag-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: "true"
+      - key: NODE_VERSION
+        value: "22"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
