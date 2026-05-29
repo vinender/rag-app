@@ -10,11 +10,10 @@ databases:
 services:
   - type: web
     name: rag-backend
-    runtime: node
+    runtime: docker
     rootDir: backend
+    dockerfilePath: ./Dockerfile
     plan: free
-    buildCommand: npm ci && npm run build
-    startCommand: node dist/main
     healthCheckPath: /health
     autoDeploy: true
     envVars:
@@ -24,8 +23,6 @@ services:
           property: connectionString
       - key: DATABASE_SSL
         value: "true"
-      - key: NODE_VERSION
-        value: "22"
       - key: OPENAI_API_KEY
         sync: false
       - key: CORS_ORIGIN
