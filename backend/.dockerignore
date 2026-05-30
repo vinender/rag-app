@@ -6,3 +6,11 @@ dist
 npm-debug.log
 .git
 test
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.vscode
+.idea

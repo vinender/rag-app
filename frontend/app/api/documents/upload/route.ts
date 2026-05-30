@@ -1,31 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { processPdf } from '@/lib/rag';
+import { backendBase } from '@/lib/backend';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-const MAX_BYTES = 20 * 1024 * 1024;
-
 export async function POST(req: NextRequest) {
   try {
     const form = await req.formData();
-    const file = form.get('file');
+    const backendRes = await fetch(`${backendBase()}/api/documents/upload`, {
+      method: 'POST',
+      body: form,
+    });
 
-    if (!(file instanceof File)) {
-      return NextResponse.json({ message: 'No file uploaded' }, { status: 400 });
+    const data = await backendRes.json().catch(() => null);
+    if (!backendRes.ok) {
+      const message =
+        data?.detail || data?.message || backendRes.statusText || 'Upload failed';
+      return NextResponse.json({ message }, { status: backendRes.status });
     }
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      return NextResponse.json({ message: 'Only PDF files are allowed' }, { status: 400 });
-    }
-    if (file.size > MAX_BYTES) {
-      return NextResponse.json({ message: 'File exceeds 20 MB limit' }, { status: 400 });
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const result = await processPdf(buffer, file.name);
-    return NextResponse.json(result);
+    return NextResponse.json(data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Upload failed';
-    return NextResponse.json({ message }, { status: 500 });
+    const message = e instanceof Error ? e.message : 'Upload proxy failed';
+    return NextResponse.json({ message }, { status: 502 });
   }
 }
