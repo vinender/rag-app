@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "next": "^16.2.6",
+    "openai": "^6.39.1",
+    "pgvector": "^0.2.1",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "unpdf": "^1.6.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

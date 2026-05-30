@@ -1,6 +1,6 @@
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
-  'http://localhost:3000';
+// Default: same-origin Next.js API routes (/api/...). Set NEXT_PUBLIC_API_URL
+// only to point at a separate backend (e.g. the standalone NestJS service).
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || '';
 
 export interface Source {
   filename: string;
@@ -33,7 +33,7 @@ async function parseError(res: Response): Promise<string> {
 export async function uploadPdf(file: File): Promise<UploadResponse> {
   const form = new FormData();
   form.append('file', file);
-  const res = await fetch(`${API_BASE}/documents/upload`, {
+  const res = await fetch(`${API_BASE}/api/documents/upload`, {
     method: 'POST',
     body: form,
   });
@@ -42,7 +42,7 @@ export async function uploadPdf(file: File): Promise<UploadResponse> {
 }
 
 export async function askQuestion(question: string): Promise<AskResponse> {
-  const res = await fetch(`${API_BASE}/documents/ask`, {
+  const res = await fetch(`${API_BASE}/api/documents/ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),
