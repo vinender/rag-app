@@ -43,11 +43,12 @@ export class DocumentsService implements OnModuleInit {
     await this.dataSource.query(
       `ALTER TABLE document_chunk ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT now()`,
     );
-    await this.dataSource.query(`
-      CREATE INDEX IF NOT EXISTS document_chunk_embedding_idx
-      ON document_chunk USING ivfflat (embedding vector_cosine_ops)
-      WITH (lists = 100)
-    `);
+    // Drop the old ivfflat index: with few rows it probes one (usually empty)
+    // list and returns zero matches. Exact KNN (seqscan) is accurate and fast
+    // enough here; add an HNSW index later if the table grows large.
+    await this.dataSource.query(
+      'DROP INDEX IF EXISTS document_chunk_embedding_idx',
+    );
   }
 
   async processPdf(file: Express.Multer.File) {

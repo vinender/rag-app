@@ -39,11 +39,10 @@ function ensureSchema() {
           created_at timestamptz NOT NULL DEFAULT now()
         )
       `);
-      await sql.query(`
-        CREATE INDEX IF NOT EXISTS document_chunk_embedding_idx
-        ON document_chunk USING ivfflat (embedding vector_cosine_ops)
-        WITH (lists = 100)
-      `);
+      // Drop the old ivfflat index: with few rows it probes one (usually empty)
+      // list and returns zero matches. Exact KNN (seqscan) is accurate and fast
+      // enough here; add an HNSW index later if the table grows large.
+      await sql.query('DROP INDEX IF EXISTS document_chunk_embedding_idx');
     })().catch((e) => {
       // reset so the next request retries instead of caching a failure
       schemaReady = null;
