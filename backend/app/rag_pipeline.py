@@ -1,4 +1,5 @@
 import json
+import re
 import logging
 from openai import OpenAI
 from app.config import OPENAI_API_KEY
