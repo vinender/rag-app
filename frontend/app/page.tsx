@@ -272,9 +272,10 @@ export default function Home() {
   }
 
   function getStrokeColor(score: number): string {
-    if (score >= 0.8) return 'var(--success)';
-    if (score >= 0.5) return '#fbbf24';
-    return 'var(--error)';
+    // Greyscale only — darker = better
+    if (score >= 0.8) return '#000000';
+    if (score >= 0.5) return '#777777';
+    return '#bbbbbb';
   }
 
   function renderGauge(score: number, title: string, desc: string, reasoning: string) {
@@ -287,7 +288,7 @@ export default function Home() {
       <div className="card metric-card">
         <div className="metric-dial">
           <svg width="120" height="120" className="progress-ring">
-            <circle stroke="rgba(255, 255, 255, 0.03)" strokeWidth="8" fill="transparent" r={radius} cx="60" cy="60" />
+            <circle stroke="#e5e5e5" strokeWidth="8" fill="transparent" r={radius} cx="60" cy="60" />
             <circle
               className="progress-ring-circle"
               stroke={color}
@@ -474,7 +475,7 @@ export default function Home() {
             {uploading ? (
               <div className="circular-loader">
                 <svg width="48" height="48" className="progress-ring">
-                  <circle stroke="rgba(255,255,255,0.03)" strokeWidth="4" fill="transparent" r="20" cx="24" cy="24" />
+                  <circle stroke="#e5e5e5" strokeWidth="4" fill="transparent" r="20" cx="24" cy="24" />
                   <circle
                     stroke="var(--accent)"
                     strokeWidth="4"
@@ -540,7 +541,7 @@ export default function Home() {
               {uploading ? (
                 <div className="circular-loader" style={{ padding: '30px 0' }}>
                   <svg width="72" height="72" className="progress-ring">
-                    <circle stroke="rgba(255,255,255,0.03)" strokeWidth="6" fill="transparent" r="30" cx="36" cy="36" />
+                    <circle stroke="#e5e5e5" strokeWidth="6" fill="transparent" r="30" cx="36" cy="36" />
                     <circle
                       stroke="var(--accent)"
                       strokeWidth="6"
