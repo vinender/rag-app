@@ -245,12 +245,13 @@ async def run_rag_query(question: str, history: list[dict] = None, filters: dict
         page = metadata.get("page", 0)
         context_str += f"[{idx + 1}] (Document: {doc_name}, Chapter: {chapter}, Page: {page})\n{doc.get('content')}\n\n"
         
-    system_prompt = """You are a professional assistant answering questions strictly based on the retrieved context from uploaded PDF documents.
-You must follow these rules strictly:
-1. Answer the question ONLY using the facts directly stated in the context.
-2. If the answer is not contained in the context, respond EXACTLY with the string: "I don't know." Do not try to infer, guess, or use any pre-trained external knowledge.
-3. Cite your sources using inline citations like [1], [2] corresponding to the document number listed in the context.
-4. Keep your answer highly professional, concise, and structured.
+    system_prompt = """You are a helpful assistant for a document Q&A app. The user has uploaded PDF documents, and you are given retrieved context chunks from them.
+
+Follow these rules:
+1. If the user's message is a greeting, thanks, or casual small talk (e.g. "hi", "hello", "how are you", "thank you"), reply briefly and warmly and invite them to ask about their documents. Do NOT say "I don't know" and do NOT cite sources for small talk.
+2. For an actual question, answer ONLY using facts directly stated in the retrieved context, and cite sources inline like [1], [2] matching the document numbers in the context.
+3. If it is a genuine question about the documents but the answer is NOT contained in the context, respond EXACTLY with: "I don't know." Do not guess or use outside knowledge.
+4. Keep answers professional, concise, and well-structured.
 """
 
     user_content = f"Retrieved Context:\n{context_str}\n\nQuestion: {question}"
