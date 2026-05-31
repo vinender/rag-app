@@ -132,6 +132,12 @@ export default function Home() {
 
   // --- Session helpers ---
   function createSession(): string {
+    // Reuse an existing empty chat instead of stacking duplicate blanks
+    const empty = sessions.find((s) => s.messages.length === 0);
+    if (empty) {
+      setActiveId(empty.id);
+      return empty.id;
+    }
     const s = blankSession();
     setSessions((prev) => [s, ...prev]);
     setActiveId(s.id);
@@ -273,9 +279,9 @@ export default function Home() {
 
   function getStrokeColor(score: number): string {
     // Greyscale only — darker = better
-    if (score >= 0.8) return '#000000';
-    if (score >= 0.5) return '#777777';
-    return '#bbbbbb';
+    if (score >= 0.8) return '#111827';
+    if (score >= 0.5) return '#6b7280';
+    return '#d1d5db';
   }
 
   function renderGauge(score: number, title: string, desc: string, reasoning: string) {
@@ -288,7 +294,7 @@ export default function Home() {
       <div className="card metric-card">
         <div className="metric-dial">
           <svg width="120" height="120" className="progress-ring">
-            <circle stroke="#e5e5e5" strokeWidth="8" fill="transparent" r={radius} cx="60" cy="60" />
+            <circle stroke="#e5e7eb" strokeWidth="8" fill="transparent" r={radius} cx="60" cy="60" />
             <circle
               className="progress-ring-circle"
               stroke={color}
@@ -475,7 +481,7 @@ export default function Home() {
             {uploading ? (
               <div className="circular-loader">
                 <svg width="48" height="48" className="progress-ring">
-                  <circle stroke="#e5e5e5" strokeWidth="4" fill="transparent" r="20" cx="24" cy="24" />
+                  <circle stroke="#e5e7eb" strokeWidth="4" fill="transparent" r="20" cx="24" cy="24" />
                   <circle
                     stroke="var(--accent)"
                     strokeWidth="4"
@@ -541,7 +547,7 @@ export default function Home() {
               {uploading ? (
                 <div className="circular-loader" style={{ padding: '30px 0' }}>
                   <svg width="72" height="72" className="progress-ring">
-                    <circle stroke="#e5e5e5" strokeWidth="6" fill="transparent" r="30" cx="36" cy="36" />
+                    <circle stroke="#e5e7eb" strokeWidth="6" fill="transparent" r="30" cx="36" cy="36" />
                     <circle
                       stroke="var(--accent)"
                       strokeWidth="6"
